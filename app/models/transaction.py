@@ -1,14 +1,18 @@
 from enum import Enum
-from pydantic import BaseModel, Field
-from typing import Optional
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
+from typing import Annotated, List, Optional
 from datetime import datetime
-from app.utils.encryption_utils import encrypt_data, decrypt_data
+from app.utils.encryption_utils import encrypt_data
+from bson.objectid import ObjectId
+
 
 class TransactionType(str, Enum):
     CREDIT = "credit"
     DEBIT = "debit"
 
-class TransactionSchema(BaseModel):
+PyObjectId = Annotated[str, BeforeValidator(str)]
+
+class TransactionModel(BaseModel):
     user_id: str = Field(..., description="Unique identifier for the user")
     full_name: str = Field(..., description="Full name of the user: encrypted in DB")
     transaction_date: datetime = Field(default_factory=datetime.now, description="Date of the transaction")
@@ -17,12 +21,13 @@ class TransactionSchema(BaseModel):
 
     def __init__(self, **data):
         super().__init__(**data)
-        # Encrypt full_name when creating a new instance
+        
         if 'full_name' in data:
             self.full_name = encrypt_data(data['full_name'])
 
-    class Config:
-        schema_extra = {
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        json_schema_extra={
             "example": {
                 "user_id": "123456789",
                 "full_name": "John Doe",
@@ -30,32 +35,34 @@ class TransactionSchema(BaseModel):
                 "transaction_amount": 250.50,
                 "transaction_type": "credit"
             }
-        }
+        },
+    )
 
 class UpdateTransactionModel(BaseModel):
-    full_name: Optional[str]
-    transaction_date: Optional[datetime]
+    """
+    A set of optional updates to be made to a document in the database.
+    """
     transaction_amount: Optional[float]
     transaction_type: Optional[TransactionType]
 
-    class Config:
-        schema_extra = {
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        json_encoders={ObjectId: str},
+        json_schema_extra={
             "example": {
-                "transaction_id": "615d8a9b08658c349de0735b",
-                "full_name": "John Doe",
                 "transaction_amount": 300.75,
                 "transaction_type": "debit"
             }
-        }
+        },
+    )
+
+class TrasactionCollection(BaseModel):
+    students: List[TransactionModel]
 
 
-def ResponseModel(data, message):
+def ResponseModel(data, message, code):
     return {
-        "data": [data],
-        "code": 200,
+        "data": data,
+        "code": code,
         "message": message,
     }
-
-
-def ErrorResponseModel(error, code, message):
-    return {"error": error, "code": code, "message": message}

@@ -1,11 +1,15 @@
-# app/utils/encryption_utils.py
-
 from cryptography.fernet import Fernet
+from loguru import logger
+from app.config.config import SECRET_KEY
 
-# Generate a key for encryption
-# In a real application, store this key securely and retrieve it from an environment variable or a secure vault
-key = Fernet.generate_key()
-cipher_suite = Fernet(key)
+ENCRYPTION_KEY = SECRET_KEY
+
+if not ENCRYPTION_KEY:
+    # If the key is not found, generate a new one and log a warning
+    logger.warning("ENCRYPTION_KEY not found in environment variables. Generating a new key.")
+    ENCRYPTION_KEY = Fernet.generate_key().decode()
+
+cipher_suite = Fernet(ENCRYPTION_KEY.encode())
 
 def encrypt_data(data: str) -> str:
     """Encrypt the data using Fernet encryption."""
@@ -13,4 +17,7 @@ def encrypt_data(data: str) -> str:
 
 def decrypt_data(encrypted_data: str) -> str:
     """Decrypt the data using Fernet decryption."""
-    return cipher_suite.decrypt(encrypted_data.encode()).decode()
+    logger.info(f"Decrypting data: {encrypted_data}")
+    data = cipher_suite.decrypt(encrypted_data.encode()).decode()
+    logger.info(f"Done decrypting data")
+    return data

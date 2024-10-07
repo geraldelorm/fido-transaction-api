@@ -11,3 +11,11 @@ services:
       - 8000:8000
     volumes:
       - .:/app
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    volumes:
+      - /tmp/mongo:/data/db
+    ports:
+      - 27017:27017
