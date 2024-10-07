@@ -1,2 +1,5 @@
 fastapi[standard]==0.113.0
 pydantic==2.8.0
+pymongo==3.12
+motor==2.5.0
+cryptography==42.0.3

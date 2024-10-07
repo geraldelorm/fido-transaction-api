@@ -1,8 +1,10 @@
 from fastapi import FastAPI
-from os import environ as env
+from app.api.v1.routes.transactions import router as transaction_router
 
 app = FastAPI()
 
-@app.get("/")
+app.include_router(transaction_router, tags=["Transaction"], prefix="/transaction")
+
+@app.get("/", tags=["Root"])
 async def root():
-    return {"message": f"Welcome to {env['APP_NAME']}"}
+    return {"message": "Welcome to Fido Transactions API"}
