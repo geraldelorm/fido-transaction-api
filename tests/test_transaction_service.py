@@ -6,9 +6,9 @@ from app.services.transaction_service import (
     read_transaction,
     read_transactions,
     update_transaction,
-    delete_transaction
+    delete_transaction,
 )
-from app.database.mongodb import mongo_db_connection
+from app.database.database import mongo_db_connection
 
 
 @pytest.mark.asyncio
@@ -18,7 +18,7 @@ async def test_create_transaction():
         full_name="Jane Doe",
         transaction_date="2023-10-06",
         transaction_amount=100.0,
-        transaction_type="credit"
+        transaction_type="credit",
     )
 
     created_transaction = await create_transaction(transaction_data)
@@ -34,7 +34,7 @@ async def test_read_transaction():
         full_name="Jane Doe",
         transaction_date="2023-10-06",
         transaction_amount=100.0,
-        transaction_type="credit"
+        transaction_type="credit",
     )
     created_transaction = await create_transaction(transaction_data)
     transaction_id = created_transaction["id"]
@@ -53,16 +53,16 @@ async def test_read_transactions():
         full_name="Jane Doe",
         transaction_date="2023-10-06",
         transaction_amount=100.0,
-        transaction_type="credit"
+        transaction_type="credit",
     )
     transaction2 = TransactionModel(
         user_id="12345",
         full_name="Jane Doe",
         transaction_date="2023-10-07",
         transaction_amount=50.0,
-        transaction_type="debit"
+        transaction_type="debit",
     )
-    
+
     await create_transaction(transaction1)
     await create_transaction(transaction2)
 
@@ -79,16 +79,13 @@ async def test_update_transaction():
         full_name="Jane Doe",
         transaction_date="2023-10-06",
         transaction_amount=100.0,
-        transaction_type="credit"
+        transaction_type="credit",
     )
     created_transaction = await create_transaction(transaction_data)
     transaction_id = created_transaction["id"]
 
     # Prepare updated data
-    update_data = {
-        "transaction_amount": 150.0,
-        "transaction_type": "debit"
-    }
+    update_data = {"transaction_amount": 150.0, "transaction_type": "debit"}
 
     updated_transaction = await update_transaction(transaction_id, update_data)
     assert updated_transaction["transaction_amount"] == 150.0
@@ -103,7 +100,7 @@ async def test_delete_transaction():
         full_name="Jane Doe",
         transaction_date="2023-10-06",
         transaction_amount=100.0,
-        transaction_type="credit"
+        transaction_type="credit",
     )
     created_transaction = await create_transaction(transaction_data)
     transaction_id = created_transaction["id"]

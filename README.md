@@ -1,39 +1,46 @@
 # Fido Transactions API
-RESTful API build with FastAPI - scope: transactions &amp; user interactions
+RESTful API built with FastAPI - scope: transactions & user interactions
 
 ## Setup and Run Instructions
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.10+
 - [Virtualenv](https://virtualenv.pypa.io/en/latest/)
 - Docker
 
 ### Setup Steps
 
 1. **Clone the repository**:
-   ```bash
-   git clone <repository-url>
-   cd fido-transaction-api
+    ```bash
+    git clone <repository-url>
+    cd fido-transaction-api
+    ```
 
-1. **create a .env file (refer to .evn.sample for content)**:
+2. **Create a .env file (refer to .env.sample for content)**:
     ```bash 
-    touch .evn
+    touch .env
+    ```
 
-2. **Create and activate a virtual environment**:
+3. **Create and activate a virtual environment**:
     ```bash
     python -m venv venv
     source venv/bin/activate  # On Windows: .venv\Scripts\activate
+    ```
 
-2. **Install dependencies from the requirements.txt file**:
+4. **Install dependencies from the requirements.txt file**:
     ```bash
     pip install -r requirements.txt
+    ```
 
-3. **Run docker compose**:
+5. **Run docker compose**:
     ```bash
-    docker compose build
-    dcoker compose up
+    docker compose up --build
+    ```
 
-4. **API should be running on**:
+6. **API should be running on**:
     ```bash
-    http://0.0.0.0:8000
+    http://0.0.0.0:8000 # http://localhost:8000/
+    ```
+
+## Design and Architectural DecisionsDesicions

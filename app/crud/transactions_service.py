@@ -1,38 +1,50 @@
-from fastapi import APIRouter, Body, HTTPException, Query
-from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
-from app.models.transaction import TransactionModel
-from app.utils.encryption_utils import encrypt_data, decrypt_data
-from app.database.mongodb import transaction_collection
+from app.models.transaction_model import TransactionModel
+from app.utils.encryption_utils import decrypt_data
+from app.database.database import transaction_collection
 from loguru import logger
 
-from app.exceptions.exceptions import (
-    FidoTransactionAPIError,
-    EntityDoesNotExistError
-)
+from app.exceptions.exceptions import FidoTransactionAPIError, EntityDoesNotExistError
+
 
 async def add_transaction(transaction_data: dict) -> dict:
-    new_transaction = await transaction_collection.insert_one(transaction_data)
-    created_transaction = await transaction_collection.find_one({"_id": new_transaction.inserted_id})
-    return transaction_helper(created_transaction)
-    
+    try:
+        new_transaction = await transaction_collection.insert_one(transaction_data)
+        logger.info("New record added")
+        created_transaction = await transaction_collection.find_one(
+            {"_id": new_transaction.inserted_id}
+        )
+        logger.info("Added a transaction record")
+        return transaction_helper(created_transaction)
+    except Exception as e:
+        logger.error("An error occurred while adding a transaction record", e)
+        raise FidoTransactionAPIError("An error occurred while adding a transaction record")
+
 
 async def retrieve_transaction(id: str) -> dict:
     transaction_id = validate_id(id)
     transaction = await transaction_collection.find_one({"_id": transaction_id})
     if transaction:
-        logger.info(f"Transaction found for ID: {id}")  
+        logger.info(f"Transaction found for ID: {id}")
         try:
-            return transaction_helper(transaction)  
-        except Exception as e:  
-            logger.error(f"An error occurred while transforming fields in transaction data for ID: {id}", e)
+            return transaction_helper(transaction)
+        except Exception as e:
+            logger.error(
+                f"An error occurred while transforming fields in transaction data for ID: {id}",
+                e,
+            )
             logger.error(f"Error data: {e}")
-            raise FidoTransactionAPIError("An error occurred while transforming fields in transaction data")
+            raise FidoTransactionAPIError(
+                "An error occurred while transforming fields in transaction data"
+            )
     else:
         raise EntityDoesNotExistError("Transaction not found.")
 
+
 async def retrieve_transaction_history(user_id: str) -> dict:
-    transactions = await transaction_collection.find({"user_id": user_id}).to_list(length=10)
+    transactions = await transaction_collection.find({"user_id": user_id}).to_list(
+        length=10
+    )
     res = []
     if len(transactions) > 0:
         for transaction in transactions:
@@ -40,6 +52,7 @@ async def retrieve_transaction_history(user_id: str) -> dict:
         return res
     else:
         raise EntityDoesNotExistError("No transactions found for the given user ID.")
+
 
 async def update_transaction(id: str, data: dict):
     transaction_id = validate_id(id)
@@ -56,6 +69,7 @@ async def update_transaction(id: str, data: dict):
     else:
         raise EntityDoesNotExistError("No transactions found for the given user ID.")
 
+
 async def delete_transaction(id: str):
     transaction_id = validate_id(id)
     transaction = await transaction_collection.find_one({"_id": transaction_id})
@@ -63,7 +77,9 @@ async def delete_transaction(id: str):
         await transaction_collection.delete_one({"_id": ObjectId(id)})
         return True
     else:
-        raise EntityDoesNotExistError(f"No transactions found for the given user ID: {id}")
+        raise EntityDoesNotExistError(
+            f"No transactions found for the given user ID: {id}"
+        )
 
 
 def validate_id(id: str) -> ObjectId:
