@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from motor.motor_asyncio import AsyncIOMotorClient
 from loguru import logger
@@ -5,7 +6,8 @@ from app.models.transaction_model import TransactionModel
 from app.utils.encryption_utils import decrypt_data
 from app.database.database import transaction_collection, analytics_collection
 from app.models.analytics_model import AnalyticsModel
-
+from app.config.redis_config import redis_client
+from app.config.config import CACHE_EXPIRATION
 from app.exceptions.exceptions import EntityDoesNotExistError, ServiceError
 
 async def compute_and_store_analytics():
@@ -65,10 +67,28 @@ async def compute_and_store_analytics():
 
 async def retrieve_transaction_analytics(user_id: str) -> AnalyticsModel:
     try:
+        cache_key = f"transaction_analytics:{user_id}"
+        cached_data = redis_client.get(cache_key)
+        
+        if cached_data:
+            logger.info(f"Cache hit for transaction analytics of user ID: {user_id}")
+            return json.loads(cached_data)
+
+        logger.info(f"Cache miss for transaction analytics of user ID: {user_id}")
+
+
         analytics = await analytics_collection.find_one({"user_id": user_id})
         if not analytics:
-            # Add logic to fetch live data and compute analytics - method below
-            raise EntityDoesNotExistError(f"Transaction analytics not found for user ID {user_id}")
+            try: 
+                analytics = retrieve_live_transaction_analytics(user_id)
+            except EntityDoesNotExistError as e:
+                logger.error(f"Transaction analytics not found for user ID: {user_id}")
+                raise EntityDoesNotExistError(f"Transaction analytics not found for user ID {user_id}")
+        
+        if analytics:
+            analytics["_id"] = str(analytics["_id"])
+            analytics["last_updated"] = analytics["last_updated"].isoformat()
+            redis_client.setex(cache_key, CACHE_EXPIRATION, json.dumps(analytics))
 
         return AnalyticsModel(**analytics)
     except EntityDoesNotExistError as e:

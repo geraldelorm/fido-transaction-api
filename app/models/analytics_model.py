@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from bson import ObjectId
 from typing import Optional
 from app.models.transaction_model import PyObjectId
@@ -13,11 +13,11 @@ class AnalyticsModel(BaseModel):
     credit_total: float
     last_updated: datetime
 
-    class Config:
-        allow_population_by_field_name = True
-        arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
-        schema_extra = {
+    model_config = ConfigDict(
+        allow_population_by_field_name = True,
+        arbitrary_types_allowed = True,
+        json_encoders = {ObjectId: str},
+        json_schema_extra = {
             "example": {
                 "user_id": "user123",
                 "average_transaction_value": 150.75,
@@ -27,7 +27,7 @@ class AnalyticsModel(BaseModel):
                 "last_updated": "2023-10-01T12:00:00Z"
             }
         }
-
+    )
 
 def ResponseModel(data, message, code):
     return {

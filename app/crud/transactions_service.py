@@ -79,6 +79,11 @@ async def update_transaction(id: str, data: dict):
             {"_id": ObjectId(id)}, {"$set": data}
         )
         if updated_transaction:
+            # Invalidate the cache for the user
+            user_id = transaction["user_id"]
+            cache_key = f"transaction_history:{user_id}"
+            redis_client.delete(cache_key)
+            logger.info(f"Cache invalidated for user ID: {user_id}")
             return True
         return False
     else:

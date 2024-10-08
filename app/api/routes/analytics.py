@@ -32,7 +32,7 @@ async def get_transaction_analytics(user_id: str):
     except Exception as e:
         logger.error(
             f"An error occurred while retrieving transaction analytics for user ID: {user_id}",
-            e,
+            e.with_traceback(),
         )
         raise ServiceError()
 
