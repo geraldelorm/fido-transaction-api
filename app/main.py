@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from loguru import logger
+import redis
 from app.api.routes.router import base_router
+from app.config.redis_config import redis_client
+
 from app.config.config import (
     API_PREFIX,
     DEBUG,
@@ -39,6 +42,8 @@ async def lifespan(app: FastAPI):
         logger.info(MONGODB_URI)
         logger.info("Successfully connected to MongoDB")
 
+        await check_redis_connection()
+
         #start analytics computation scheduler
         start_scheduler()
     except Exception as e:
@@ -55,6 +60,13 @@ app = FastAPI(lifespan=lifespan)
 @app.get("/", tags=["root-ping"])
 async def root():
     return {"message": "Welcome to Fido Transactions API"}
+
+async def check_redis_connection():
+    try:
+        redis_client.ping()
+        logger.info("Successfully connected to Redis")
+    except redis.ConnectionError as e:
+        logger.error(f"Failed to connect to Redis: {e}")
 
 
 # Registering exception handlers

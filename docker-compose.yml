@@ -13,6 +13,7 @@ services:
       - .:/app
     depends_on:
       - mongodb
+      - redis
     restart: always
     networks:
       - app-network
@@ -30,12 +31,14 @@ services:
 
   #Redis service  
   redis:
-    image: redis:latest
+    image: redis:7.4.1
     container_name: fido-transactions-cache
     ports:
       - "6379:6379"
     volumes:
       - redis-data:/data
+    networks:
+      - app-network
 
 networks:
   app-network:
