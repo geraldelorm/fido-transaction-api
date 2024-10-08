@@ -5,8 +5,9 @@ RESTful API built with FastAPI - scope: transactions & user interactions
 
 ### Prerequisites
 
-- Python 3.10+
-- [Virtualenv](https://virtualenv.pypa.io/en/latest/)
+- Python 3.10+ 
+- pip
+- Virtualenv
 - Docker
 
 ### Setup Steps
@@ -17,30 +18,36 @@ RESTful API built with FastAPI - scope: transactions & user interactions
     cd fido-transaction-api
     ```
 
-2. **Create a .env file (refer to .env.sample for content)**:
-    ```bash 
-    touch .env
-    ```
-
-3. **Create and activate a virtual environment**:
+2. **Create and activate a virtual environment**:
     ```bash
     python -m venv venv
     source venv/bin/activate  # On Windows: .venv\Scripts\activate
     ```
 
-4. **Install dependencies from the requirements.txt file**:
+3. **Install dependencies from the requirements.txt file**:
     ```bash
     pip install -r requirements.txt
     ```
 
-5. **Run docker compose**:
+4. **Run docker compose**:
     ```bash
     docker compose up --build
     ```
 
-6. **API should be running on**:
+5. **API should be running on**:
     ```bash
     http://0.0.0.0:8000 # http://localhost:8000/
     ```
 
-## Design and Architectural DecisionsDesicions
+## Design and Architectural Decisions
+
+
+
+
+## Stategies for Scaling to a substantial user base
+
+
+
+
+
+### Thank you!!
