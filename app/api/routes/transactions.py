@@ -50,12 +50,9 @@ async def add_transaction_record(background_tasks: BackgroundTasks, transaction:
     except EntityDoesNotExistError as e:
         logger.error(f"Transaction not found: {e}")
         raise EntityDoesNotExistError(f"Transaction with id: {id} not found.")
-    except ServiceError as e:
+    except Exception as e:
         logger.error(f"Service error: {e}")
         raise ServiceError("An error occurred while adding the transaction")
-    except Exception as e:
-        logger.error(f"An error occurred while adding a transaction record: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An error occurred while adding the transaction")
 
 @router.get(
     "/{id}",

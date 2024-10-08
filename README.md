@@ -41,13 +41,87 @@ RESTful API built with FastAPI - scope: transactions & user interactions
 
 ## Design and Architectural Decisions
 
+### 1. API Design
+- **RESTful API**: The API follows REST principles, making it intuitive and easy to use.
+
+- **Status Codes**: Proper HTTP status codes are used to indicate the result of an API request (e.g., 200 for success, 404 for not found, 500 for server error).
+
+### 2. Models
+- **Pydantic Models**: Used Pydantic models for data validation and serialization. This ensures that the data conforms to the expected schema before processing.
+  - Example: [`TransactionModel`](app/models/transaction_model.py), [`AnalyticsModel`](app/models/analytics_model.py).
+
+### 3. Database Connections
+- **MongoDB**: Utilized MongoDB for its flexibility and scalability.
+  - **AsyncIO Motor Client**: Used [`motor.motor_asyncio.AsyncIOMotorClient`](app/database/database.py) for asynchronous database operations, improving the performance of the API.
+  - **Database Session Manager**: Implemented a session manager to handle database connections efficiently.
+    - Example: [`MongoDBSessionManager`](app/database/database.py).
+
+### 4. Caching
+- **Redis**: Integrated Redis for caching frequently accessed data to reduce database load and improve response times. Implemented strategies of cache updates and invalidation.
+  - Example: [`redis_client`](app/config/redis_config.py).
+
+### 5. Error Handling
+- **Custom Exceptions**: Defined custom exceptions to handle specific error scenarios gracefully.
+  - Example: [`ServiceError`](app/exceptions/exceptions.py), [`EntityDoesNotExistError`](app/exceptions/exceptions.py).
+- **Exception Handlers**: Registered exception handlers to return meaningful error messages to the client.
+  - Example: [`service_error_handler`](app/exceptions/exception_handler.py).
+
+### 6. Logging
+- **Loguru**: Used Loguru for logging, providing better insights into the application's behavior and aiding in debugging.
+  - Example: [`logger`](app/config/logging.py).
+
+### 7. Background Tasks
+- **FastAPI Background Tasks**: Utilized FastAPI's background tasks to handle operations that do not need to block the main request-response cycle.
+  - Example: [`update_user_statistics`](app/tasks/background_tasks.py).
+
+### 8. Scheduler
+- **Analytics Computation Scheduler**: Implemented a scheduler to periodically compute and store analytics data.
+  - Example: [`start_scheduler`](app/tasks/scheduler.py).
+
+### 9. Testing
+- **Pytest**: Used [`pytest`](tests/routes/test_transactions_route.py) for uni testing to ensure the reliability and correctness.
+
+### 10. Containerization
+- **Docker**: Containerized the application using Docker to ensure consistency across different environments.
+  - Example: [Dockerfile](Dockerfile), [docker-compose.yml](docker-compose.yml).
+
+### 11. Configuration Management
+- **Environment Variables**: Managed configuration using environment variables to keep sensitive information secure and make the application configurable.
+  - Example: [`.env`](.env), [`config.py`](app/config/config.py).
 
 
-
-## Stategies for Scaling to a substantial user base
-
+## Strategies for Scaling to a Substantial User Base
 
 
+### 1. Pagination of Endpoints
+- **Strategy**: Implement pagination for endpoints that return large datasets.
+- **Trade-offs**: 
+  - **Pros**: Reduces server load and improves response times.
+  - **Cons**: Adds complexity to the API and client-side code.
+
+### 2. Database Indexing
+- **Strategy**: Use indexing on frequently queried fields to speed up database operations.
+- **Trade-offs**: 
+  - **Pros**: Significantly improves query performance.
+  - **Cons**: Increases storage requirements and can slow down write operations.
+
+### 3. Event-Driven Architecture
+- **Strategy**: Implement an event-driven architecture to decouple services and handle asynchronous tasks.
+- **Trade-offs**: 
+  - **Pros**: Improves scalability and fault tolerance.
+  - **Cons**: Adds complexity to the system and requires robust event management.
+
+### 4. Comprehensive Testing
+- **Strategy**: Increase the scope of testing to include integration, performance, and stress tests.
+- **Trade-offs**: 
+  - **Pros**: Ensures the reliability and performance of the application under various conditions.
+  - **Cons**: Requires more resources and time to implement and maintain.
+
+### 5. Resilient Deployment Strategies
+- **Strategy**: Use Kubernetes (K8s) for resilient and scalable deployments.
+- **Trade-offs**: 
+  - **Pros**: Provides automated scaling, self-healing, and efficient resource management.
+  - **Cons**: Adds complexity to the deployment process and requires expertise in Kubernetes.
 
 
 ### Thank you!!
