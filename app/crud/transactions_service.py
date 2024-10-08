@@ -43,7 +43,7 @@ async def retrieve_transaction(id: str) -> dict:
 
 async def retrieve_transaction_history(user_id: str) -> dict:
     transactions = await transaction_collection.find({"user_id": user_id}).to_list(
-        length=10
+        length=100
     )
     res = []
     if len(transactions) > 0:
@@ -93,7 +93,7 @@ def validate_id(id: str) -> ObjectId:
 def transaction_helper(transaction: TransactionModel) -> dict:
     return {
         "id": str(transaction["_id"]),
-        "full_name": decrypt_data(transaction["full_name"]),
+        # "full_name": decrypt_data(transaction["full_name"]),
         "transaction_date": transaction["transaction_date"],
         "transaction_amount": transaction["transaction_amount"],
         "transaction_type": transaction["transaction_type"],

@@ -1,6 +1,5 @@
 from motor.motor_asyncio import AsyncIOMotorClient
-from app.config.config import MONGO_DB_NAME, FIDO_TRANSACTIONS_COLLECTION, MONGODB_URI
-
+from app.config.config import MONGO_DB_NAME, FIDO_TRANSACTIONS_COLLECTION, FIDO_ANALYTICS_COLLECTION, MONGODB_URI
 
 class DBSessionManager:
     def __init__(self, uri: str, database_name: str):
@@ -20,4 +19,8 @@ mongodb_session_manager = MongoDBSessionManager(
 
 transaction_collection = mongodb_session_manager.get_collection(
     FIDO_TRANSACTIONS_COLLECTION
+)
+
+analytics_collection = mongodb_session_manager.get_collection(
+    FIDO_ANALYTICS_COLLECTION
 )

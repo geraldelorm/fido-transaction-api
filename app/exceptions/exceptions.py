@@ -2,7 +2,7 @@ class FidoTransactionAPIError(Exception):
     """base exception class"""
 
     def __init__(
-        self, message: str = "Service is unavailable", name: str = "FidoTransaction"
+        self, message: str = "Service is unavailable, please try again later", name: str = "FidoTransactionsAPI"
     ):
         self.message = message
         self.name = name

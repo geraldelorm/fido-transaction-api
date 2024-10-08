@@ -37,7 +37,7 @@ class TransactionModel(BaseModel):
             "example": {
                 "user_id": "123456789",
                 "full_name": "John Doe",
-                "transaction_date": "2023-10-06T10:23:58.741Z",
+                "transaction_date": "2024-10-08T01:04:08.762475",
                 "transaction_amount": 250.50,
                 "transaction_type": "credit",
             }

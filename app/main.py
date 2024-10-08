@@ -11,6 +11,7 @@ from app.config.config import (
 )
 from motor.motor_asyncio import AsyncIOMotorClient
 from contextlib import asynccontextmanager
+from app.tasks.scheduler import start_scheduler
 from app.exceptions.exception_handler import (
     service_error_handler,
     entity_does_not_exist_error_handler,
@@ -37,6 +38,9 @@ async def lifespan(app: FastAPI):
         await database.command("ping")
         logger.info(MONGODB_URI)
         logger.info("Successfully connected to MongoDB")
+
+        #start analytics computation scheduler
+        start_scheduler()
     except Exception as e:
         logger.error(f"Failed to connect to MongoDB: {e}")
         raise ServiceError("MongoDB connection error")
@@ -59,4 +63,4 @@ app.add_exception_handler(EntityDoesNotExistError, entity_does_not_exist_error_h
 app.add_exception_handler(EntityAlreadyExistsError, entity_already_exists_error_handler)
 app.add_exception_handler(InvalidOperationError, invalid_operation_error_handler)
 
-app.include_router(base_router, prefix=API_PREFIX, tags=["transactions"])
+app.include_router(base_router, prefix=API_PREFIX)

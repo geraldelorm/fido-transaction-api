@@ -37,7 +37,6 @@ async def add_transaction_record(transaction: TransactionModel = Body(...)):
         logger.error("An error occurred while adding a transaction record", e)
         raise ServiceError()
 
-
 @router.get(
     "/{id}",
     response_description="Transaction data retrieved",

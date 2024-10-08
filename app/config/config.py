@@ -23,6 +23,7 @@ MONGO_INITDB_ROOT_PASSWORD: str = config("MONGO_INITDB_ROOT_USERNAME", default="
 FIDO_TRANSACTIONS_COLLECTION: str = config(
     "FIDO_TRANSACTIONS_COLLECTION", default="transactions"
 )
+FIDO_ANALYTICS_COLLECTION: str = config("FIDO_ANALYTICS_COLLECTION", default="analytics")
 
 LOGGING_LEVEL = logging.DEBUG if DEBUG else logging.INFO
 logging.basicConfig(
