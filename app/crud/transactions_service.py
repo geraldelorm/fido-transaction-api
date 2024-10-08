@@ -1,8 +1,11 @@
+import json
 from bson.objectid import ObjectId
 from app.models.transaction_model import TransactionModel
 from app.utils.encryption_utils import decrypt_data
 from app.database.database import transaction_collection
 from loguru import logger
+from app.config.redis_config import redis_client
+from app.config.config import CACHE_EXPIRATION
 
 from app.exceptions.exceptions import FidoTransactionAPIError, EntityDoesNotExistError
 
@@ -42,6 +45,15 @@ async def retrieve_transaction(id: str) -> dict:
 
 
 async def retrieve_transaction_history(user_id: str) -> dict:
+    cache_key = f"transaction_history:{user_id}"
+    cached_data = redis_client.get(cache_key)
+    
+    if cached_data:
+        logger.info(f"Cache hit for transaction history of user ID: {user_id}")
+        return json.loads(cached_data)
+    
+    logger.info(f"Cache miss for transaction history of user ID: {user_id}")
+
     transactions = await transaction_collection.find({"user_id": user_id}).to_list(
         length=100
     )
@@ -49,6 +61,9 @@ async def retrieve_transaction_history(user_id: str) -> dict:
     if len(transactions) > 0:
         for transaction in transactions:
             res.append(transaction_helper(transaction))
+
+        redis_client.setex(cache_key, CACHE_EXPIRATION, json.dumps(res))
+
         return res
     else:
         raise EntityDoesNotExistError("No transactions found for the given user ID.")

@@ -24,6 +24,7 @@ FIDO_TRANSACTIONS_COLLECTION: str = config(
     "FIDO_TRANSACTIONS_COLLECTION", default="transactions"
 )
 FIDO_ANALYTICS_COLLECTION: str = config("FIDO_ANALYTICS_COLLECTION", default="analytics")
+CACHE_EXPIRATION: int = config("CACHE_EXPIRATION", cast=int, default=300)
 
 LOGGING_LEVEL = logging.DEBUG if DEBUG else logging.INFO
 logging.basicConfig(
