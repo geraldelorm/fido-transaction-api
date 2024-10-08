@@ -21,7 +21,12 @@ RESTful API built with FastAPI - scope: transactions & user interactions
 2. **Create and activate a virtual environment**:
     ```bash
     python -m venv venv
-    source venv/bin/activate  # On Windows: .venv\Scripts\activate
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
+
+3. **Create a .env file refer to .evn.example**:
+    ```bash
+    touch .evn
     ```
 
 3. **Install dependencies from the requirements.txt file**:
