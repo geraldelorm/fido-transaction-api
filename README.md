@@ -48,46 +48,39 @@ RESTful API built with FastAPI - scope: transactions & user interactions
 
 ### 2. Models
 - **Pydantic Models**: Used Pydantic models for data validation and serialization. This ensures that the data conforms to the expected schema before processing.
-  - Example: [`TransactionModel`](app/models/transaction_model.py), [`AnalyticsModel`](app/models/analytics_model.py).
+  - Usage: [`TransactionModel`](app/models/transaction_model.py), [`AnalyticsModel`](app/models/analytics_model.py).
 
 ### 3. Database Connections
 - **MongoDB**: Utilized MongoDB for its flexibility and scalability.
   - **AsyncIO Motor Client**: Used [`motor.motor_asyncio.AsyncIOMotorClient`](app/database/database.py) for asynchronous database operations, improving the performance of the API.
   - **Database Session Manager**: Implemented a session manager to handle database connections efficiently.
-    - Example: [`MongoDBSessionManager`](app/database/database.py).
+    - Usage: [`MongoDBSessionManager`](app/database/database.py).
 
 ### 4. Caching
 - **Redis**: Integrated Redis for caching frequently accessed data to reduce database load and improve response times. Implemented strategies of cache updates and invalidation.
-  - Example: [`redis_client`](app/config/redis_config.py).
+  - Usage: [`redis_client`](app/config/redis_config.py).
 
 ### 5. Error Handling
 - **Custom Exceptions**: Defined custom exceptions to handle specific error scenarios gracefully.
-  - Example: [`ServiceError`](app/exceptions/exceptions.py), [`EntityDoesNotExistError`](app/exceptions/exceptions.py).
+  - Usage: [`ServiceError`](app/exceptions/exceptions.py), [`EntityDoesNotExistError`](app/exceptions/exceptions.py).
 - **Exception Handlers**: Registered exception handlers to return meaningful error messages to the client.
-  - Example: [`service_error_handler`](app/exceptions/exception_handler.py).
+  - Usage: [`service_error_handler`](app/exceptions/exception_handler.py).
 
 ### 6. Logging
 - **Loguru**: Used Loguru for logging, providing better insights into the application's behavior and aiding in debugging.
-  - Example: [`logger`](app/config/logging.py).
+  - Usage: [`logger`](app/config/logging.py).
 
 ### 7. Background Tasks
 - **FastAPI Background Tasks**: Utilized FastAPI's background tasks to handle operations that do not need to block the main request-response cycle.
-  - Example: [`update_user_statistics`](app/tasks/background_tasks.py).
+  - Usage: [`update_user_statistics`](app/tasks/background_tasks.py).
 
 ### 8. Scheduler
 - **Analytics Computation Scheduler**: Implemented a scheduler to periodically compute and store analytics data.
-  - Example: [`start_scheduler`](app/tasks/scheduler.py).
+  - Usage: [`start_scheduler`](app/tasks/scheduler.py).
 
-### 9. Testing
-- **Pytest**: Used [`pytest`](tests/routes/test_transactions_route.py) for uni testing to ensure the reliability and correctness.
-
-### 10. Containerization
-- **Docker**: Containerized the application using Docker to ensure consistency across different environments.
-  - Example: [Dockerfile](Dockerfile), [docker-compose.yml](docker-compose.yml).
-
-### 11. Configuration Management
+### 9. Configuration Management
 - **Environment Variables**: Managed configuration using environment variables to keep sensitive information secure and make the application configurable.
-  - Example: [`.env`](.env), [`config.py`](app/config/config.py).
+  - Usage: [`.env`](.env), [`config.py`](app/config/config.py).
 
 
 ## Strategies for Scaling to a Substantial User Base
