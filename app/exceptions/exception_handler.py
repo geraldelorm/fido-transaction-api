@@ -1,11 +1,9 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
-from app.exceptions.exceptions import (
-    ServiceError,
-    EntityDoesNotExistError,
-    EntityAlreadyExistsError,
-    InvalidOperationError,
-)
+
+from app.exceptions.exceptions import (EntityAlreadyExistsError,
+                                       EntityDoesNotExistError,
+                                       InvalidOperationError, ServiceError)
 
 
 async def service_error_handler(request: Request, exc: ServiceError):

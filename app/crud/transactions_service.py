@@ -1,13 +1,15 @@
 import json
+
 from bson.objectid import ObjectId
+from loguru import logger
+
+from app.config.config import CACHE_EXPIRATION
+from app.config.redis_config import redis_client
+from app.database.database import transaction_collection
+from app.exceptions.exceptions import (EntityDoesNotExistError,
+                                       FidoTransactionAPIError)
 from app.models.transaction_model import TransactionModel
 from app.utils.encryption_utils import decrypt_data
-from app.database.database import transaction_collection
-from loguru import logger
-from app.config.redis_config import redis_client
-from app.config.config import CACHE_EXPIRATION
-
-from app.exceptions.exceptions import FidoTransactionAPIError, EntityDoesNotExistError
 
 
 async def add_transaction(transaction_data: dict) -> dict:
@@ -21,7 +23,9 @@ async def add_transaction(transaction_data: dict) -> dict:
         return transaction_helper(created_transaction)
     except Exception as e:
         logger.error("An error occurred while adding a transaction record", e)
-        raise FidoTransactionAPIError("An error occurred while adding a transaction record")
+        raise FidoTransactionAPIError(
+            "An error occurred while adding a transaction record"
+        )
 
 
 async def retrieve_transaction(id: str) -> dict:
@@ -47,11 +51,11 @@ async def retrieve_transaction(id: str) -> dict:
 async def retrieve_transaction_history(user_id: str) -> dict:
     cache_key = f"transaction_history:{user_id}"
     cached_data = redis_client.get(cache_key)
-    
+
     if cached_data:
         logger.info(f"Cache hit for transaction history of user ID: {user_id}")
         return json.loads(cached_data)
-    
+
     logger.info(f"Cache miss for transaction history of user ID: {user_id}")
 
     transactions = await transaction_collection.find({"user_id": user_id}).to_list(
