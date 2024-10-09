@@ -15,10 +15,15 @@ from app.models.transaction_model import (
     UpdateTransactionModel,
     ResponseModel,
 )
-from app.tasks.background_tasks import update_user_statistics, alert_relevant_systems, recalculate_credit_scores
+from app.tasks.background_tasks import (
+    update_user_statistics,
+    alert_relevant_systems,
+    recalculate_credit_scores,
+)
 
 
 router = APIRouter()
+
 
 @router.post(
     "/",
@@ -26,19 +31,21 @@ router = APIRouter()
     response_model=ResponseModel,
     status_code=status.HTTP_201_CREATED,
 )
-async def add_transaction_record(background_tasks: BackgroundTasks, transaction: TransactionModel = Body(...)):
+async def add_transaction_record(
+    background_tasks: BackgroundTasks, transaction: TransactionModel = Body(...)
+):
     logger.info("Adding a transaction record")
     transaction = jsonable_encoder(transaction)
     try:
         new_transaction = await add_transaction(transaction)
         logger.info("Added a transaction record")
 
-        '''
+        """
         Simutation of handling asynchronous tasks with backgraound non-blocking processing
 
         This and other strategies like implementing an event driven architecture can be beneficial
 
-        '''
+        """
 
         background_tasks.add_task(update_user_statistics, transaction["user_id"])
         background_tasks.add_task(alert_relevant_systems, transaction)
@@ -53,6 +60,7 @@ async def add_transaction_record(background_tasks: BackgroundTasks, transaction:
     except Exception as e:
         logger.error(f"Service error: {e}")
         raise ServiceError("An error occurred while adding the transaction")
+
 
 @router.get(
     "/{id}",

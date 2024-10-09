@@ -20,10 +20,13 @@ MONGODB_URI: str = config("MONGODB_URI", default="mongodb://mongodb:27017/")
 MONGO_DB_NAME: str = config("MONGO_DB_NAME", default="fido_transactions_db")
 MONGO_INITDB_ROOT_USERNAME: str = config("MONGO_INITDB_ROOT_USERNAME", default="myuser")
 MONGO_INITDB_ROOT_PASSWORD: str = config("MONGO_INITDB_ROOT_USERNAME", default="mypass")
+
 FIDO_TRANSACTIONS_COLLECTION: str = config(
     "FIDO_TRANSACTIONS_COLLECTION", default="transactions"
 )
-FIDO_ANALYTICS_COLLECTION: str = config("FIDO_ANALYTICS_COLLECTION", default="analytics")
+FIDO_ANALYTICS_COLLECTION: str = config(
+    "FIDO_ANALYTICS_COLLECTION", default="analytics"
+)
 CACHE_EXPIRATION: int = config("CACHE_EXPIRATION", cast=int, default=300)
 
 LOGGING_LEVEL = logging.DEBUG if DEBUG else logging.INFO

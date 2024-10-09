@@ -7,6 +7,4 @@ base_router.include_router(
     transactions.router, tags=["transactions"], prefix="/v1/transaction"
 )
 
-base_router.include_router(
-    analytics.router, tags=["analytics"], prefix="/v1/analytics"
-)
+base_router.include_router(analytics.router, tags=["analytics"], prefix="/v1/analytics")

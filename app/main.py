@@ -44,10 +44,10 @@ async def lifespan(app: FastAPI):
 
         await check_redis_connection()
 
-        #start analytics computation scheduler
+        # start analytics computation scheduler
         start_scheduler()
     except Exception as e:
-        logger.error(f"Failed to connect to MongoDB: {e}")
+        logger.error(f"Failed to connect to MongoDB / Redis: {e}")
         raise ServiceError("MongoDB connection error")
     yield
 
@@ -60,6 +60,7 @@ app = FastAPI(lifespan=lifespan)
 @app.get("/", tags=["root-ping"])
 async def root():
     return {"message": "Welcome to Fido Transactions API"}
+
 
 async def check_redis_connection():
     try:
