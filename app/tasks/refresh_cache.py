@@ -1,11 +1,11 @@
 import json
+
 from loguru import logger
-from app.config.redis_config import redis_client
+
 from app.config.config import CACHE_EXPIRATION
-from app.crud.transactions_service import (
-    fetch_transaction_history_from_db,
-    fetch_transaction_analytics_from_db,
-)
+from app.config.redis_config import redis_client
+from app.crud.transactions_service import (fetch_transaction_analytics_from_db,
+                                           fetch_transaction_history_from_db)
 
 
 async def refresh_cache(user_id: str):

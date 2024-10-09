@@ -2,25 +2,16 @@ from fastapi import APIRouter, BackgroundTasks, Body, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from loguru import logger
 
-from app.crud.transactions_service import (
-    add_transaction,
-    delete_transaction,
-    retrieve_transaction,
-    retrieve_transaction_history,
-    update_transaction,
-)
-from app.exceptions.exceptions import ServiceError, EntityDoesNotExistError
-from app.models.transaction_model import (
-    TransactionModel,
-    UpdateTransactionModel,
-    ResponseModel,
-)
-from app.tasks.background_tasks import (
-    update_user_statistics,
-    alert_relevant_systems,
-    recalculate_credit_scores,
-)
-
+from app.crud.transactions_service import (add_transaction, delete_transaction,
+                                           retrieve_transaction,
+                                           retrieve_transaction_history,
+                                           update_transaction)
+from app.exceptions.exceptions import EntityDoesNotExistError, ServiceError
+from app.models.transaction_model import (ResponseModel, TransactionModel,
+                                          UpdateTransactionModel)
+from app.tasks.background_tasks import (alert_relevant_systems,
+                                        recalculate_credit_scores,
+                                        update_user_statistics)
 
 router = APIRouter()
 

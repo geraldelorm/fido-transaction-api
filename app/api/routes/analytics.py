@@ -1,13 +1,12 @@
 from datetime import datetime
 from typing import Optional
+
 from fastapi import APIRouter, Query, status
 from loguru import logger
 
-from app.crud.analytics_service import (
-    retrieve_transaction_analytics,
-    retrieve_live_transaction_analytics,
-)
-from app.exceptions.exceptions import ServiceError, EntityDoesNotExistError
+from app.crud.analytics_service import (retrieve_live_transaction_analytics,
+                                        retrieve_transaction_analytics)
+from app.exceptions.exceptions import EntityDoesNotExistError, ServiceError
 from app.models.analytics_model import ResponseModel
 
 router = APIRouter()

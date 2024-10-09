@@ -1,10 +1,8 @@
 from motor.motor_asyncio import AsyncIOMotorClient
-from app.config.config import (
-    MONGO_DB_NAME,
-    FIDO_TRANSACTIONS_COLLECTION,
-    FIDO_ANALYTICS_COLLECTION,
-    MONGODB_URI,
-)
+
+from app.config.config import (FIDO_ANALYTICS_COLLECTION,
+                               FIDO_TRANSACTIONS_COLLECTION, MONGO_DB_NAME,
+                               MONGODB_URI)
 
 
 class DBSessionManager:

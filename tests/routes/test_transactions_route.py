@@ -1,20 +1,20 @@
-import pytest
-from fastapi.testclient import TestClient
-from unittest.mock import AsyncMock, patch
-from app.main import app
-from app.models.transaction_model import TransactionModel, ResponseModel
-from app.exceptions.exceptions import EntityDoesNotExistError, ServiceError
 import json
 from datetime import datetime
+from unittest.mock import AsyncMock, patch
+
+import pytest
+from fastapi.testclient import TestClient
 from pytest_mock import MockerFixture
+
+from app.api.routes.transactions import (delete_transaction_data,
+                                         get_transaction_data,
+                                         get_transaction_history,
+                                         update_transaction_data)
+from app.exceptions.exceptions import EntityDoesNotExistError, ServiceError
+from app.main import app
 from app.models.analytics_model import AnalyticsModel
-from app.api.routes.transactions import (
-    get_transaction_data,
-    get_transaction_history,
-    update_transaction_data,
-    delete_transaction_data,
-)
-from app.models.transaction_model import ResponseModel, UpdateTransactionModel
+from app.models.transaction_model import (ResponseModel, TransactionModel,
+                                          UpdateTransactionModel)
 
 client = TestClient(app)
 PREFIX = "/api/v1/transaction"

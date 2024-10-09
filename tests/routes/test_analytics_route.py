@@ -1,12 +1,14 @@
 import json
 from datetime import datetime
-import pytest
-from pytest_mock import MockerFixture
-from fastapi.testclient import TestClient
 from unittest.mock import patch
+
+import pytest
+from fastapi.testclient import TestClient
+from pytest_mock import MockerFixture
+
+from app.exceptions.exceptions import EntityDoesNotExistError, ServiceError
 from app.main import app
 from app.models.analytics_model import AnalyticsModel
-from app.exceptions.exceptions import EntityDoesNotExistError, ServiceError
 
 client = TestClient(app)
 PREFIX = "/api/v1/analytics"

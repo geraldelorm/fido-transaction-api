@@ -1,5 +1,6 @@
 from cryptography.fernet import Fernet
 from loguru import logger
+
 from app.config.config import SECRET_KEY
 
 # Ensure SECRET_KEY is a string

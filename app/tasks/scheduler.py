@@ -1,4 +1,5 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 from app.crud.analytics_service import compute_and_store_analytics
 
 scheduler = AsyncIOScheduler()

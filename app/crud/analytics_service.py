@@ -1,11 +1,13 @@
 import json
 from datetime import datetime
+
 from loguru import logger
-from app.database.database import transaction_collection, analytics_collection
-from app.models.analytics_model import AnalyticsModel
-from app.config.redis_config import redis_client
+
 from app.config.config import CACHE_EXPIRATION
+from app.config.redis_config import redis_client
+from app.database.database import analytics_collection, transaction_collection
 from app.exceptions.exceptions import EntityDoesNotExistError, ServiceError
+from app.models.analytics_model import AnalyticsModel
 
 
 async def compute_and_store_analytics():

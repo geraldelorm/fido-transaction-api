@@ -1,5 +1,6 @@
 from fastapi import APIRouter
-from . import transactions, analytics
+
+from . import analytics, transactions
 
 base_router = APIRouter()
 
