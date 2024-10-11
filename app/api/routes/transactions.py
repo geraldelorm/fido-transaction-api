@@ -2,23 +2,19 @@ from fastapi import APIRouter, BackgroundTasks, Body, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from loguru import logger
 
-from app.crud.transactions_service import (
-    add_transaction,
-    delete_transaction,
-    retrieve_transaction,
-    retrieve_transaction_history,
-    update_transaction,
-)
-from app.exceptions.exceptions import ServiceError, EntityDoesNotExistError
-from app.models.transaction_model import (
-    TransactionModel,
-    UpdateTransactionModel,
-    ResponseModel,
-)
-from app.tasks.background_tasks import update_user_statistics, alert_relevant_systems, recalculate_credit_scores
-
+from app.crud.transactions_service import (add_transaction, delete_transaction,
+                                           retrieve_transaction,
+                                           retrieve_transaction_history,
+                                           update_transaction)
+from app.exceptions.exceptions import EntityDoesNotExistError, ServiceError
+from app.models.transaction_model import (ResponseModel, TransactionModel,
+                                          UpdateTransactionModel)
+from app.tasks.background_tasks import (alert_relevant_systems,
+                                        recalculate_credit_scores,
+                                        update_user_statistics)
 
 router = APIRouter()
+
 
 @router.post(
     "/",
@@ -26,19 +22,21 @@ router = APIRouter()
     response_model=ResponseModel,
     status_code=status.HTTP_201_CREATED,
 )
-async def add_transaction_record(background_tasks: BackgroundTasks, transaction: TransactionModel = Body(...)):
+async def add_transaction_record(
+    background_tasks: BackgroundTasks, transaction: TransactionModel = Body(...)
+):
     logger.info("Adding a transaction record")
     transaction = jsonable_encoder(transaction)
     try:
         new_transaction = await add_transaction(transaction)
         logger.info("Added a transaction record")
 
-        '''
+        """
         Simutation of handling asynchronous tasks with backgraound non-blocking processing
 
         This and other strategies like implementing an event driven architecture can be beneficial
 
-        '''
+        """
 
         background_tasks.add_task(update_user_statistics, transaction["user_id"])
         background_tasks.add_task(alert_relevant_systems, transaction)
@@ -53,6 +51,7 @@ async def add_transaction_record(background_tasks: BackgroundTasks, transaction:
     except Exception as e:
         logger.error(f"Service error: {e}")
         raise ServiceError("An error occurred while adding the transaction")
+
 
 @router.get(
     "/{id}",
