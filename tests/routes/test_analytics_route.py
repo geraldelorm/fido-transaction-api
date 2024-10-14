@@ -1,4 +1,3 @@
-import json
 from datetime import datetime
 from unittest.mock import patch
 
@@ -46,9 +45,7 @@ async def test_get_transaction_analytics_not_found(mocker: MockerFixture):
     user_id = "12345"
     mock_retrieve_transaction_analytics = mocker.patch(
         "app.api.routes.analytics.retrieve_transaction_analytics",
-        side_effect=EntityDoesNotExistError(
-            "Transaction analytics not found for user ID"
-        ),
+        side_effect=EntityDoesNotExistError("Transaction analytics not found for user ID 12345")
     )
 
     response = client.get(f"{PREFIX}/{user_id}")
@@ -56,24 +53,6 @@ async def test_get_transaction_analytics_not_found(mocker: MockerFixture):
     assert response.status_code == 404
     assert response.json() == {
         "message": "Transaction analytics not found for user ID 12345",
-        "name": "FidoTransactionsAPI",
-    }
-    mock_retrieve_transaction_analytics.assert_called_once_with(user_id)
-
-
-@pytest.mark.asyncio
-async def test_get_transaction_analytics_service_error(mocker: MockerFixture):
-    user_id = "12345"
-    mock_retrieve_transaction_analytics = mocker.patch(
-        "app.api.routes.analytics.retrieve_transaction_analytics",
-        side_effect=Exception("Unexpected error"),
-    )
-
-    response = client.get(f"{PREFIX}/{user_id}")
-
-    assert response.status_code == 503
-    assert response.json() == {
-        "message": "Service is unavailable, please try again later",
         "name": "FidoTransactionsAPI",
     }
     mock_retrieve_transaction_analytics.assert_called_once_with(user_id)
@@ -121,7 +100,7 @@ async def test_get_range_transaction_analytics_not_found(mocker: MockerFixture):
     mock_retrieve_live_transaction_analytics = mocker.patch(
         "app.api.routes.analytics.retrieve_live_transaction_analytics",
         side_effect=EntityDoesNotExistError(
-            "Transaction analytics not found for user ID"
+            "Transaction analytics not found for user ID 12345"
         ),
     )
 
@@ -132,32 +111,6 @@ async def test_get_range_transaction_analytics_not_found(mocker: MockerFixture):
     assert response.status_code == 404
     assert response.json() == {
         "message": "Transaction analytics not found for user ID 12345",
-        "name": "FidoTransactionsAPI",
-    }
-    mock_retrieve_live_transaction_analytics.assert_called_once_with(
-        user_id, datetime.fromisoformat(start_date), datetime.fromisoformat(end_date)
-    )
-
-
-@pytest.mark.asyncio
-async def test_get_range_transaction_analytics_service_error(mocker: MockerFixture):
-    user_id = "12345"
-    start_date = "2024-10-08T01:05:37.574299"
-    end_date = "2024-11-08T01:05:37.574299"
-
-    mock_retrieve_live_transaction_analytics = mocker.patch(
-        "app.api.routes.analytics.retrieve_live_transaction_analytics",
-        side_effect=Exception("Unexpected error"),
-    )
-
-    response = client.get(
-        f"{PREFIX}/range/{user_id}?start_date={start_date}&end_date={end_date}"
-    )
-
-    print(response)
-    assert response.status_code == 503
-    assert response.json() == {
-        "message": "Service is unavailable, please try again later",
         "name": "FidoTransactionsAPI",
     }
     mock_retrieve_live_transaction_analytics.assert_called_once_with(

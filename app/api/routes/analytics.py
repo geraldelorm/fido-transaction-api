@@ -11,7 +11,6 @@ from app.models.analytics_model import ResponseModel
 
 router = APIRouter()
 
-
 @router.get(
     "/{user_id}",
     response_description="User analytics retrieved",
@@ -19,26 +18,13 @@ router = APIRouter()
 )
 async def get_transaction_analytics(user_id: str):
     logger.info(f"Retrieving transaction analytics for user ID: {user_id}")
-    try:
-        analytics = await retrieve_transaction_analytics(user_id)
-        logger.info(f"Transaction analytics retrieved for user ID: {user_id}")
-        return ResponseModel(
-            analytics,
-            "Transaction analytics retrieved successfully",
-            status.HTTP_200_OK,
-        )
-    except EntityDoesNotExistError as e:
-        logger.error(f"Transaction analytics not found for user ID: {user_id}")
-        raise EntityDoesNotExistError(
-            f"Transaction analytics not found for user ID {user_id}"
-        )
-    except Exception as e:
-        logger.error(
-            f"An error occurred while retrieving transaction analytics for user ID: {user_id}",
-            e,
-        )
-        raise ServiceError()
-
+    analytics = await retrieve_transaction_analytics(user_id)
+    logger.info(f"Transaction analytics retrieved for user ID: {user_id}")
+    return ResponseModel(
+        analytics,
+        "Transaction analytics retrieved successfully",
+        status.HTTP_200_OK,
+    )
 
 @router.get(
     "/range/{user_id}",
@@ -55,24 +41,12 @@ async def get_range_transaction_analytics(
     ),
 ):
     logger.info(f"Retrieving transaction analytics for user ID: {user_id}")
-    try:
-        analytics = await retrieve_live_transaction_analytics(
-            user_id, start_date, end_date
-        )
-        logger.info(f"Transaction analytics retrieved for user ID: {user_id}")
-        return ResponseModel(
-            analytics,
-            "Transaction analytics retrieved successfully",
-            status.HTTP_200_OK,
-        )
-    except EntityDoesNotExistError as e:
-        logger.error(f"Transaction analytics not found for user ID: {user_id}")
-        raise EntityDoesNotExistError(
-            f"Transaction analytics not found for user ID {user_id}"
-        )
-    except Exception as e:
-        logger.error(
-            f"An error occurred while retrieving transaction analytics for user ID: {user_id}",
-            e,
-        )
-        raise ServiceError()
+    analytics = await retrieve_live_transaction_analytics(
+        user_id, start_date, end_date
+    )
+    logger.info(f"Transaction analytics retrieved for user ID: {user_id}")
+    return ResponseModel(
+        analytics,
+        "Transaction analytics retrieved successfully",
+        status.HTTP_200_OK,
+    )
